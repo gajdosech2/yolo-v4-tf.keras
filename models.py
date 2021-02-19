@@ -31,6 +31,7 @@ class Yolov4(object):
         self.strides = yolo_config['strides']
         self.output_sizes = [self.img_size[0] // s for s in self.strides]
         self.class_color = {name: list(np.random.random(size=3)*255) for name in self.class_names}
+        self.class_color[self.class_names[0]] = [0, 255, 0]
         # Training
         self.max_boxes = yolo_config['max_boxes']
         self.iou_loss_thresh = yolo_config['iou_loss_thresh']
@@ -91,6 +92,7 @@ class Yolov4(object):
 
     def save_model(self, path):
         self.yolo_model.save(path)
+      
 
     def preprocess_img(self, img):
         img = cv2.resize(img, self.img_size[:2])
@@ -106,7 +108,7 @@ class Yolov4(object):
                                 callbacks=callbacks,
                                 initial_epoch=initial_epoch)
     # raw_img: RGB
-    def predict_img(self, raw_img, random_color=True, plot_img=True, figsize=(10, 10), show_text=True, return_output=False):
+    def predict_img(self, raw_img, random_color=True, plot_img=True, figsize=(10, 10), show_text=True, return_output=True):
         print('img shape: ', raw_img.shape)
         img = self.preprocess_img(raw_img)
         imgs = np.expand_dims(img, axis=0)
