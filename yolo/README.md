@@ -1,7 +1,7 @@
 # yolo-v4-tf.keras
 A simple tf.keras implementation of YOLO v4
 
-![asset/pred.png](asset/pred.png)
+![https://raw.githubusercontent.com/taipingeric/yolo-v4-tf.keras/master/asset/pred.png](https://raw.githubusercontent.com/taipingeric/yolo-v4-tf.keras/master/asset/pred.png)
 
 ## TODO
 
