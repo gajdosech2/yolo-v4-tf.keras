@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 from tensorflow.keras import layers, models, optimizers
 
-from custom_layers import yolov4_neck, yolov4_head, nms
+from layers import yolov4_neck, yolov4_head, nms
 from utils import load_weights, get_detection_data, draw_bbox, voc_ap, draw_plot_func, read_txt_to_list
 from config import yolo_config
 from loss import yolo_loss
