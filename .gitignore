@@ -1,5 +1,6 @@
 model
 model/
+data/raw
 yolov4.weights
 .idea
 __pycache__/
