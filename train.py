@@ -1,6 +1,8 @@
+import sys
+sys.path.insert(0, './yolo')
+
 from utils import DataGenerator, read_annotation_lines
 from models import Yolov4
-from config import yolo_config
 import os
 
 train_lines, val_lines = read_annotation_lines('data/annotations.txt', test_size=0.1)
@@ -20,6 +22,6 @@ model.fit(data_gen_train,
           
           
 PROCESS_PATH = 'data/process/'
-model.predict(PROCESS_PATH + os.listdir(PROCESS_PATH)[0], random_color=True)
+model.predict(PROCESS_PATH + os.listdir(PROCESS_PATH)[0], random_color=False, show_text=False)
           
 model.save_model('model')
