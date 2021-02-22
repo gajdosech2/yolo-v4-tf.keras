@@ -16,12 +16,9 @@ model = Yolov4(weight_path=None,
 
 model.fit(data_gen_train, 
           initial_epoch=0,
-          epochs=32, 
+          epochs=1, 
           val_data_gen=data_gen_val,
           callbacks=[])
           
           
-PROCESS_PATH = 'data/process/'
-model.predict(PROCESS_PATH + os.listdir(PROCESS_PATH)[0], random_color=False, show_text=False)
-          
-model.save_model('model')
+model.save_model('yolo/model')
