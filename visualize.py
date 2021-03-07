@@ -35,10 +35,9 @@ def visualize(path, save=False):
         imgplot = plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
         with open(path + "/" + name + ".txt", "r") as f:
             line = f.readline()
-            while line and line != "---\n":
-                clss = np.argmax([i for i in line.split()]) 
-                [x, y, w, h] = [float(i) for i in f.readline().split()]       
-                conf = [float(i) for i in f.readline().split()][0]
+            while line:
+                [x, y, w, h, clss] = [float(i) for i in line.split(",")]    
+                clss = int(clss)
                     
                 if clss != 2:
                     color = ['g','r','b','0'][clss]
@@ -49,7 +48,6 @@ def visualize(path, save=False):
                         ax.text(x, y, "%0.2f" % (conf), color=color)
                     
                 line = f.readline()
-        
         j += 1
 
     if save:

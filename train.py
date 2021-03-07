@@ -16,7 +16,7 @@ model = Yolov4(weight_path=None,
 
 model.fit(data_gen_train, 
           initial_epoch=0,
-          epochs=1, 
+          epochs=64, 
           val_data_gen=data_gen_val,
           callbacks=[])
           

@@ -30,9 +30,9 @@ def join_labels1(dataset_type, dataset_name):
           space = False
           line = single_labels.readline()
           while line:
-            coords = line.split(" ")
-            if len(coords) == 4:
-              x_center, y_center, width, height = [int(c) for c in coords]
+            coords = line.split(",")
+            if len(coords) == 5:
+              x_center, y_center, width, height, cls = [int(c) for c in coords]
               x_min = x_center - width // 2
               y_min = y_center - height // 2
               x_max = x_center + width // 2
@@ -41,7 +41,7 @@ def join_labels1(dataset_type, dataset_name):
               if space:
                 print(" ", file=labels, end="")
               space = True 
-              print(f"{x_min},{y_min},{x_max},{y_max},0", file=labels, end="")
+              print(f"{x_min},{y_min},{x_max},{y_max},{cls}", file=labels, end="")
             line = single_labels.readline()
             
         print("", file=labels)
@@ -65,9 +65,9 @@ def join_labels2(dataset_type, dataset_name):
         with open(part_path + "/" + file, "r") as single_labels:
           line = single_labels.readline()
           while line:
-            coords = line.split(" ")
-            if len(coords) == 4:
-              x_center, y_center, width, height = [int(c) for c in coords]
+            coords = line.split(",")
+            if len(coords) == 5:
+              x_center, y_center, width, height, cls = [int(c) for c in coords]
               x_min = x_center - width // 2
               y_min = y_center - height // 2
               x_max = x_center + width // 2
