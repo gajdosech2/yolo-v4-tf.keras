@@ -1,99 +1,93 @@
 import os
 import sys
 
-
-TYPE = 1
-def join_labels(dataset_type, dataset_name):
+CLS_NAME = 'wheel'
+TYPE = 2
+def join_labels(dataset_type):
     if TYPE == 1:
-        join_labels1(dataset_type, dataset_name)
+        join_labels1(dataset_type)
     elif TYPE == 2:
-        join_labels2(dataset_type, dataset_name)
+        join_labels2(dataset_type)
         
 
-def join_labels1(dataset_type, dataset_name):
-  path = 'data/' + dataset_type + '/' + dataset_name + '/'
-  dataset_parts = [part for part in os.listdir(path) if os.path.isdir(path + part)]
+def join_labels1(dataset_type):
+  path = 'data/' + dataset_type + '/'
+  datasets = [dataset for dataset in os.listdir(path) if os.path.isdir(path + dataset)]
    
-  with open(path + "/" + "type1_annotations.txt", "w") as labels:
-    for dataset_part in dataset_parts:
-      part_path = path + "/" + dataset_part
-      files = os.listdir(part_path)
-      for file in files:
-        if not ".txt" in file:
-          continue
-        
-        name = file.split(".")[0]
-        print("processing: " + name)
-        print(dataset_name + "/" + dataset_part + "/" + name + "_normalmap.png ", file=labels, end="")
+  with open(path + 'type1_annotations.txt', 'w') as labels:
+    for dataset in datasets:
+      dataset_path = path + '/' + dataset
+      for file in os.listdir(dataset_path):
+        if '.txt' in file:
+          name = file.split('.')[0]
+          print('processing: ' + name)
+          print(dataset + '/' + name + '_normalmap.png ', file=labels, end='')
           
-        with open(part_path + "/" + file, "r") as single_labels:
-          space = False
-          line = single_labels.readline()
-          while line:
-            coords = line.split(",")
-            if len(coords) == 5:
-              x_center, y_center, width, height, cls = [int(c) for c in coords]
-              x_min = x_center - width // 2
-              y_min = y_center - height // 2
-              x_max = x_center + width // 2
-              y_max = y_center + height // 2
-                
-              if space:
-                print(" ", file=labels, end="")
-              space = True 
-              print(f"{x_min},{y_min},{x_max},{y_max},{cls}", file=labels, end="")
+          with open(dataset_path + '/' + file, 'r') as single_labels:
+            space = False
             line = single_labels.readline()
-            
-        print("", file=labels)
-        
-        
-def join_labels2(dataset_type, dataset_name):
-  path = 'data/' + dataset_type + '/' + dataset_name + '/'
-  dataset_parts = [part for part in os.listdir(path) if os.path.isdir(path + part)]
-   
-  with open(path + "/" + "type2_annotations.txt", "w") as labels:
-    for dataset_part in dataset_parts:
-      part_path = path + "/" + dataset_part
-      files = os.listdir(part_path)
-      for file in files:
-        if not ".txt" in file:
-          continue
-        
-        name = file.split(".")[0]
-        print("processing: " + name)
-          
-        with open(part_path + "/" + file, "r") as single_labels:
-          line = single_labels.readline()
-          while line:
-            coords = line.split(",")
-            if len(coords) == 5:
-              x_center, y_center, width, height, cls = [int(c) for c in coords]
-              x_min = x_center - width // 2
-              y_min = y_center - height // 2
-              x_max = x_center + width // 2
-              y_max = y_center + height // 2
+            while line:
+              coords = line.split(',')
+              if len(coords) == 5:
+                x_center, y_center, width, height, cls = [int(c) for c in coords]
+                x_min = x_center - width // 2
+                y_min = y_center - height // 2
+                x_max = x_center + width // 2
+                y_max = y_center + height // 2
                 
-              print(dataset_name + "/" + dataset_part + "/" + name + "_normalmap.png,", file=labels, end="")
-              print("{},{},{},{},wheel".format(x_min, y_min, x_max, y_max), file=labels)
-            line = single_labels.readline()     
+                if space:
+                  print(' ', file=labels, end='')
+                space = True 
+                print(f'{x_min},{y_min},{x_max},{y_max},{cls}', file=labels, end='')
+                line = single_labels.readline()
+            
+          print('', file=labels)
+        
+        
+def join_labels2(dataset_type):
+  path = 'data/' + dataset_type + '/'
+  datasets = [dataset for dataset in os.listdir(path) if os.path.isdir(path + dataset)]
+   
+  with open(path + '/' + 'type2_annotations.txt', 'w') as labels:
+    for dataset in datasets:
+      dataset_path = path + '/' + dataset
+      for file in os.listdir(dataset_path):
+        if '.txt' in file:
+          name = file.split('.')[0]
+          print('processing: ' + name)
+          
+          with open(dataset_path + '/' + file, 'r') as single_labels:
+            line = single_labels.readline()
+            while line:
+              coords = line.split(',')
+              if len(coords) == 5:
+                x_center, y_center, width, height, cls = [int(c) for c in coords]
+                x_min = x_center - width // 2
+                y_min = y_center - height // 2
+                x_max = x_center + width // 2
+                y_max = y_center + height // 2
+                
+                print(dataset + '/' + name + '_normalmap.png,', file=labels, end='')
+                print('{},{},{},{},{}'.format(x_min, y_min, x_max, y_max, CLS_NAME), file=labels)
+              line = single_labels.readline()     
             
     
-def process(dataset_type, dataset_name):    
-  raw_path = 'data/raw/' + dataset_type + '/' + dataset_name + '/'
-  dataset_parts = os.listdir(raw_path)
+def process(dataset_type):    
+  path = 'data/_COGS/' + dataset_type + '/'
+  datasets = os.listdir(path)
   
-  for dataset_part in dataset_parts:
-    export_path = 'data/' + dataset_type + '/' + dataset_name + '/' + dataset_part + '/'
+  for dataset in datasets:
+    export_path = 'data/' + dataset_type + '/' + dataset + '/'
     if not os.path.exists(export_path):
       os.makedirs(export_path, exist_ok=True)
   
-    data_path = raw_path + dataset_part + '/'
-    files = os.listdir(data_path)
+    dataset_path = path + dataset + '/'
+    files = os.listdir(dataset_path)
   
     for file in files:
-      if ".cogs" in file:  
+      if '.cogs' in file:  
         name = file.split('.')[0]
-        print("processing: " + name)
+        print('processing: ' + name)
         if os.name == 'nt':
           os.system('"utils\WCC.exe"' + 
                     ' --boxes ' + 
@@ -105,13 +99,11 @@ def process(dataset_type, dataset_name):
 
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
   if len(sys.argv) == 1:
-    process('train', 'basic')
-    join_labels('train', 'basic')
+    process('train')
+    join_labels('train')
   elif len(sys.argv) == 2:
-    join_labels('train', 'basic')
-  elif len(sys.argv) == 3:
-    process(sys.argv[1], sys.argv[2])
-    join_labels(sys.argv[1], sys.argv[2])
+    process(sys.argv[1])
+    join_labels(sys.argv[1])
 
