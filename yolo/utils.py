@@ -127,7 +127,6 @@ class DataGenerator(Sequence):
                  annotation_lines,
                  class_name_path,
                  folder_path,
-                 max_boxes=100,
                  shuffle=True):
         self.annotation_lines = annotation_lines
         self.class_name_path = class_name_path
@@ -139,7 +138,7 @@ class DataGenerator(Sequence):
         self.shuffle = shuffle
         self.indexes = np.arange(len(self.annotation_lines))
         self.folder_path = folder_path
-        self.max_boxes = max_boxes
+        self.max_boxes = yolo_config['max_boxes']
         self.on_epoch_end()
 
     def __len__(self):
@@ -187,13 +186,14 @@ class DataGenerator(Sequence):
     def get_data(self, annotation_line):
         line = annotation_line.split()
         img_path = line[0]
-        img = cv2.imread(os.path.join(self.folder_path, img_path))[:, :, ::-1]
+        img = cv2.imread(os.path.join(self.folder_path, img_path), cv2.IMREAD_UNCHANGED)[:, :, ::-1]
         ih, iw = img.shape[:2]
         h, w, c = self.target_img_size
         boxes = np.array([np.array(list(map(float, box.split(',')))) for box in line[1:]], dtype=np.float32) # x1y1x2y2
         scale_w, scale_h = w / iw, h / ih
         img = cv2.resize(img, (w, h))
         image_data = np.array(img) / 255.
+
 
         # correct boxes coordinates
         box_data = np.zeros((self.max_boxes, 5))

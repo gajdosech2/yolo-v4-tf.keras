@@ -52,11 +52,12 @@ class Yolov4(object):
         yolov4_output = yolov4_neck(input_layer, self.num_classes)
         self.yolo_model = models.Model(input_layer, yolov4_output)
 
+        size = yolo_config['img_size'][0]
         # Build training model
         y_true = [
-            layers.Input(name='input_2', shape=(52, 52, 3, (self.num_classes + 5))),  # label small boxes
-            layers.Input(name='input_3', shape=(26, 26, 3, (self.num_classes + 5))),  # label medium boxes
-            layers.Input(name='input_4', shape=(13, 13, 3, (self.num_classes + 5))),  # label large boxes
+            layers.Input(name='input_2', shape=(int(52*(size/416)), int(52*(size/416)), 3, (self.num_classes + 5))),  # label small boxes
+            layers.Input(name='input_3', shape=(int(26*(size/416)), int(26*(size/416)), 3, (self.num_classes + 5))),  # label medium boxes
+            layers.Input(name='input_4', shape=(int(13*(size/416)), int(13*(size/416)), 3, (self.num_classes + 5))),  # label large boxes
             layers.Input(name='input_5', shape=(self.max_boxes, 4)),  # true bboxes
         ]
         loss_list = tf.keras.layers.Lambda(yolo_loss, name='yolo_loss',
@@ -125,7 +126,7 @@ class Yolov4(object):
             return detections
 
     def predict(self, img_path, random_color=True, plot_img=True, figsize=(10, 10), show_text=True):
-        raw_img = cv2.imread(img_path)[:, :, ::-1]
+        raw_img = cv2.imread(img_path, cv2.IMREAD_UNCHANGED)[:, :, ::-1]
         return self.predict_img(raw_img, random_color, plot_img, figsize, show_text)
 
     def export_gt(self, annotation_path, gt_folder_path):
@@ -152,7 +153,7 @@ class Yolov4(object):
                 imgs = np.zeros((len(paths), *self.img_size))
                 raw_img_shapes = []
                 for j, path in enumerate(paths):
-                    img = cv2.imread(path)
+                    img = cv2.imread(path, cv2.IMREAD_UNCHANGED)
                     raw_img_shapes.append(img.shape)
                     img = self.preprocess_img(img)
                     imgs[j] = img
@@ -509,14 +510,14 @@ class Yolov4(object):
             )
 
     def predict_raw(self, img_path):
-        raw_img = cv2.imread(img_path)
+        raw_img = cv2.imread(img_path, cv2.IMREAD_UNCHANGED)
         print('img shape: ', raw_img.shape)
         img = self.preprocess_img(raw_img)
         imgs = np.expand_dims(img, axis=0)
         return self.yolo_model.predict(imgs)
 
     def predict_nonms(self, img_path, iou_threshold=0.413, score_threshold=0.1):
-        raw_img = cv2.imread(img_path)
+        raw_img = cv2.imread(img_path, cv2.IMREAD_UNCHANGED)
         print('img shape: ', raw_img.shape)
         img = self.preprocess_img(raw_img)
         imgs = np.expand_dims(img, axis=0)

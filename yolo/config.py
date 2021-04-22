@@ -1,6 +1,6 @@
 yolo_config = {
     # Basic
-    'img_size': (608, 608, 3),
+    'img_size': (608, 608, 4),
     'anchors': [12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401],
     'strides': [8, 16, 32],
     'xyscale': [1.2, 1.1, 1.05],
@@ -11,7 +11,7 @@ yolo_config = {
     'num_gpu': 1,
 
     # Inference
-    'max_boxes': 100,
+    'max_boxes': 120,
     'iou_threshold': 0.413,
     'score_threshold': 0.4,
 }

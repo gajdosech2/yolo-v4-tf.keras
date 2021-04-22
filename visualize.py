@@ -7,6 +7,7 @@ import matplotlib.patches as patches
 import matplotlib.gridspec as gridspec
 import random
 
+FILE_SUFFIX = "_datamap.png"
 DIM = 2
 PROB = False
 
@@ -18,7 +19,7 @@ def visualize(path, save=False):
     
   j = 0
   for image_file in images:
-    if (".png" not in image_file and ".PNG" not in image_file) or "labels" in image_file or "depthmap" in image_file:
+    if FILE_SUFFIX not in image_file:
       continue
             
     if j > (DIM*DIM - 1):
@@ -56,7 +57,7 @@ def visualize(path, save=False):
 
 if __name__ == "__main__":
   if len(sys.argv) == 1:
-    visualize('data/train/dataset_0')
+    visualize('data/train/dataset0')
   elif len(sys.argv) == 2:
     visualize(sys.argv[1])
 

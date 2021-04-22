@@ -1,8 +1,9 @@
 import os
 import sys
 
+FILE_SUFFIX = '_datamap.png'
 CLS_NAME = 'wheel'
-TYPE = 2
+TYPE = 1
 def join_labels(dataset_type):
     if TYPE == 1:
         join_labels1(dataset_type)
@@ -21,7 +22,7 @@ def join_labels1(dataset_type):
         if '.txt' in file:
           name = file.split('.')[0]
           print('processing: ' + name)
-          print(dataset + '/' + name + '_normalmap.png ', file=labels, end='')
+          print('data/' + dataset_type + '/' + dataset + '/' + name + FILE_SUFFIX, file=labels, end=' ')
           
           with open(dataset_path + '/' + file, 'r') as single_labels:
             space = False
@@ -67,7 +68,7 @@ def join_labels2(dataset_type):
                 x_max = x_center + width // 2
                 y_max = y_center + height // 2
                 
-                print(dataset + '/' + name + '_normalmap.png,', file=labels, end='')
+                print(dataset + '/' + name + FILE_SUFFIX, file=labels, end=' ')
                 print('{},{},{},{},{}'.format(x_min, y_min, x_max, y_max, CLS_NAME), file=labels)
               line = single_labels.readline()     
             
@@ -91,9 +92,9 @@ def process(dataset_type):
         if os.name == 'nt':
           os.system('"utils\WCC.exe"' + 
                     ' --boxes ' + 
-                    data_path + file + ' ' + 
+                    dataset_path + file + ' ' + 
                     export_path + ' ' + 
-                    data_path)
+                    dataset_path)
         else:
           pass
 
@@ -101,7 +102,7 @@ def process(dataset_type):
 
 if __name__ == '__main__':
   if len(sys.argv) == 1:
-    process('train')
+    #process('train')
     join_labels('train')
   elif len(sys.argv) == 2:
     process(sys.argv[1])
